@@ -11,7 +11,10 @@
 
 .questionInputTextArea {
     width: 100%;
-    line-height: 40px;
+    border: none;
+    outline: none;
+    resize: none; /* Prevent manual resizing */
+    overflow: hidden; /* Hide scrollbar */
 }
 
 .questionInputButtonsContainer {
