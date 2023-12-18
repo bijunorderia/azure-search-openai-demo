@@ -27,7 +27,7 @@ class ChatReadRetrieveReadApproach(Approach):
     top documents from search, then constructs a prompt with them, and then uses OpenAI to generate an completion
     (answer) with that prompt.
     """
-    system_message_chat_conversation = """Assistant helps the company employees with their healthcare plan questions, and questions about the employee handbook. Be brief in your answers.
+    system_message_chat_conversation = """Assistant helps the company employees with content creation.
 Answer ONLY with the facts listed in the list of sources below. If there isn't enough information below, say you don't know. Do not generate answers that don't use the sources below. If asking a clarifying question to the user would help, ask the question.
 For tabular information return it as an html table. Do not return markdown format. If the question is not in English, answer in the language used in the question.
 Each source has a name followed by colon and the actual information, always include the source name for each fact you use in the response. Use square brackets to reference the source, for example [info1.txt]. Don't combine sources, list each source separately, for example [info1.txt][info2.pdf].
@@ -42,7 +42,7 @@ Enclose the follow-up questions in double angle brackets. Example:
 Do no repeat questions that have already been asked.
 Make sure the last question ends with ">>"."""
 
-    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base about employee healthcare plans and the employee handbook.
+    query_prompt_template = """Below is a history of the conversation so far, and a new question asked by the user that needs to be answered by searching in a knowledge base.
 You have access to Azure Cognitive Search index with 100's of documents.
 Generate a search query based on the conversation and the new question.
 Do not include cited source filenames and document names e.g info.txt or doc.pdf in the search query terms.
@@ -52,10 +52,10 @@ If the question is not in English, translate the question to English before gene
 If you cannot generate a search query, return just the number 0.
 """
     query_prompt_few_shots = [
-        {"role": USER, "content": "What are my health plans?"},
-        {"role": ASSISTANT, "content": "Show available health plans"},
-        {"role": USER, "content": "does my plan cover cardio?"},
-        {"role": ASSISTANT, "content": "Health plan cardio coverage"},
+        {"role": USER, "content": "Provide me an analysis of the code?"},
+        {"role": ASSISTANT, "content": "Here is the analsis of the code as per guidelines 1. Analysis 2. Modified Code 3. References "},
+        {"role": USER, "content": "Is there any other recommendation"},
+        {"role": ASSISTANT, "content": "Yes here are some additional recommendations as per the guidelines"},
     ]
 
     def __init__(
@@ -131,8 +131,8 @@ If you cannot generate a search query, return just the number 0.
             **chatgpt_args,
             model=self.chatgpt_model,
             messages=messages,
-            temperature=0.0,
-            max_tokens=100,  # Setting too low risks malformed JSON, setting too high may affect performance
+            temperature=0,
+            max_tokens=2000,  # Setting too low risks malformed JSON, setting too high may affect performance
             n=1,
             functions=functions,
             function_call="auto",
